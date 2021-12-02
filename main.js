@@ -1,8 +1,9 @@
 import { h, render, Component} from '/modules/preact/preact.module.js';
+
 import htm from '/modules/htm/htm.module.js';
 
-import Home from './components/home.js'
-import App from './components/app.js'
+import Home from './components/home.js';
+import App from './components/app.js';
 
 import Normal from './components/normal.js';
 import Settings from './components/settings.js';

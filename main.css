@@ -3,9 +3,7 @@ body {background-color:white; overscroll-behavior:none;}
 
 body {
     display: flex;
-    align-items: center;
-    padding-top: 10%;
-    padding-bottom: 40px;
+    flex-direction: column;
 }
   
 .h3 {
