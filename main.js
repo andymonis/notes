@@ -1,14 +1,13 @@
-import { h, render, Component} from '/modules/preact/preact.module.js';
+import Context from "./context.js"
 
-import htm from '/modules/htm/htm.module.js';
+// import Route from "./route.js";
 
-import Home from './components/home.js';
-import App from './components/app.js';
-
-import Normal from './components/normal.js';
-import Settings from './components/settings.js';
-
-import Route from "./route.js";
+import Router from "./components/router.js"
+import Header from "./components/header.js"
+import Home from "./components/home.js"
+import Note from "./components/note.js"
+import List from "./components/list.js"
+import ListItem from "./components/listitem.js"
 /**
  * Notes App 
  */
@@ -20,14 +19,16 @@ export default class Main {
      * @param {*} params
      */
     async init(params) {
-        const html = htm.bind(h);
     
-        Route.add("/", Home);
-        Route.add("/normal", Normal);
-        Route.add("/settings", Settings);
+        // Route.add("/", "<page-home></page-home>");
+        // Route.add("/note", "page-note");
 
-        render(html`<div class="notes"><route /></div>`, document.body);
+        // Route.route("/");
 
-        Route.route("/");
+        
+        await ko.applyBindings(Context.context)
+
+        // Context.action("route", "/")
+        Context.route("/")
     }   
 }

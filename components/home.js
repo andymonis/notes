@@ -1,27 +1,20 @@
-import { h, render, Component} from '/modules/preact/preact.module.js';
-import htm from '/modules/htm/htm.module.js';
+/**
+ * Page-Home
+ */
 
-import Route from '../route.js';
+ko.components.register('page-home', {
+    viewModel: function(params) {
+    },
+    template: `
+    <div class="inset-x-0 p-2 transition transform origin-top-right">
+        <div class="ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50">
+            <div class="pt-5 pb-6 px-5">
+                <h1>Home</h1>  
+                <list></list>
+            </div>
+        </div>
+    </div>
+    `
+});
 
-import Header from './header.js';
-
-const html = htm.bind(h);
-
-class Home extends Component {
-
-    on_settings(){
-        Route.route("/settings")
-    }
-
-    render({ page }, {}) {
-        // const html = htm.bind(h);
-        return html`
-            <${Header} />
-            <main data-bind="visible:$data.view()==='signin'" class="signin form-signin">
-                
-            </main>
-        `;
-    }
-}
-
-export default Home
+export default {}
