@@ -5,23 +5,24 @@
 // import Route from "../route.js";
 import Context from "../context.js";
 
+import Note from "./note.js"
+
 ko.components.register('app-header', {
     viewModel: function(params) {
         // Data: value is either null, 'like', or 'dislike'
         this.chosenValue = params.value;
 
         // Behaviors
-        this.on_back = () => { 
+        this.on_back = () => {
             // console.log("back");
             // Route.route("/");
             Context.route("/")
-            // Context.action("route", "/")
+                // Context.action("route", "/")
         };
-        this.on_new = () => { 
-            // console.log("new");
-            // Route.route("/notes");
+        this.on_new = () => {
+            let note = new Note({ markdown: "<new>" })
+            Context.action_new_note(note);
             Context.route("/note")
-            // Context.action("route", "/note")
         };
     },
     template: `
@@ -33,7 +34,7 @@ ko.components.register('app-header', {
                         <span class="sr-only">Close menu</span>
                         <!-- Heroicon name: outline/x -->
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12L18 6M6 12l12 6"></path>
                         </svg>
                     </button>
                     <div>
@@ -51,7 +52,7 @@ ko.components.register('app-header', {
                         <span class="sr-only">Close menu</span>
                         <!-- Heroicon name: outline/x -->
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18L12 6M6 12l12 0"></path>
                         </svg>
                     </button>
                     </div>
@@ -63,5 +64,3 @@ ko.components.register('app-header', {
 });
 
 export default {}
-
-

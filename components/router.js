@@ -15,9 +15,9 @@ ko.components.register('router', {
             "/note": this.hide.note
         }
 
-        Context.on("route",(ns,context,data)=>{
+        Context.on("route", (ns, context, data) => {
             // hide all
-            for(let key in this.hide){
+            for (let key in this.hide) {
                 this.hide[key](true)
             }
             // show only selected
