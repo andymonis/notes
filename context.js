@@ -1,5 +1,4 @@
-import Store from "https://vee3-328508.ew.r.appspot.com/vee3/vee_store.js";
-// import Store from "/vee3/vee_store.js";
+import Store from "/vee3/vee_store.js";
 import Note from "./components/note.js";
 
 let context = {
