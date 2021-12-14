@@ -1,4 +1,4 @@
-import Store from "/vee3/vee_store.js";
+import V3Store from "/vee3/vee_store.js";
 import Note from "./components/note.js";
 
 let context = {
@@ -63,13 +63,21 @@ let action = function(ns, data) {
 }
 
 let action_load_notes = function() {
-    let notes = Store.$local_get("notes");
+    let notes = V3Store.$local_get("notes");
     if (notes) {
         for (let i = 0; i < notes.length; i++) {
             let note = new Note(notes[i]);
             context.notes.push(note);
         }
     }
+}
+
+let action_save = async function(_note) {
+    console.log("save");
+
+    let res = await V3Store.$remote_set({ name: "andy.monis" })
+
+    console.log(res)
 }
 
 let action_new_note = function(_note) {
@@ -79,7 +87,7 @@ let action_new_note = function(_note) {
     // Set the current note for viewing
     action("note", _note);
     // Update
-    Store.$local_set("notes", ko.toJSON(context.notes));
+    V3Store.$local_set("notes", ko.toJSON(context.notes));
     // Set the dirty flag to locally save
     action("dirty", true);
 }
@@ -102,7 +110,7 @@ let action_del_note = function(_note) {
 let action_timer_save = function() {
     if (context.dirty() === true) {
         console.log("saving local context");
-        Store.$local_set("notes", ko.toJSON(context.notes));
+        V3Store.$local_set("notes", ko.toJSON(context.notes));
         action("dirty", false);
     } else {
         console.log("NOT saving local context");
@@ -116,6 +124,7 @@ window.context = context;
 export default {
     context,
     action,
+    action_save,
     action_load_notes,
     action_new_note,
     action_del_note,

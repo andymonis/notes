@@ -6,12 +6,17 @@ import Home from "./components/home.js"
 import Note from "./components/note.js"
 import List from "./components/v3list.js"
 import ListItem from "./components/v3listitem.js"
+
+import V3Store from "/vee3/vee_store.js";
+
 /**
  * Notes App 
  */
 export default class Main {
     constructor(config) {
         Context.$api = config.$api;
+
+        V3Store.instanceId(config.app.instancedid);
     }
 
     /**
