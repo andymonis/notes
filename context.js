@@ -75,7 +75,27 @@ let action_load_notes = function() {
 let action_save = async function(_note) {
     console.log("save");
 
-    let res = await V3Store.$remote_set({ name: "andy.monis" })
+    let json = ko.toJSON(context.notes);
+    let res = await V3Store.$remote_set(json, "/notes")
+
+    console.log(res)
+}
+
+let action_load = async function(_note) {
+    console.log("load");
+
+    let res = await V3Store.$remote_get("/notes");
+
+    if (res.status === "ok" && res.obj !== undefined) {
+        let notes = JSON.parse(res.obj);
+        let new_notes = [];
+        for (let i = 0; i < notes.length; i++) {
+            let note = new Note(notes[i]);
+            new_notes.push(note);
+        }
+        // Set notes from the server
+        context.notes(new_notes);
+    }
 
     console.log(res)
 }
@@ -125,6 +145,7 @@ export default {
     context,
     action,
     action_save,
+    action_load,
     action_load_notes,
     action_new_note,
     action_del_note,
