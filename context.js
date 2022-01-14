@@ -76,7 +76,7 @@ let action_save = async function(_note) {
     console.log("save");
 
     let json = ko.toJSON(context.notes);
-    let res = await V3Store.$remote_set(json, "/notes")
+    let res = await V3Store.$private_set(json, "notes")
 
     console.log(res)
 }
@@ -84,7 +84,7 @@ let action_save = async function(_note) {
 let action_load = async function(_note) {
     console.log("load");
 
-    let res = await V3Store.$remote_get("/notes");
+    let res = await V3Store.$private_get("notes");
 
     if (res.status === "ok" && res.obj !== undefined) {
         let notes = JSON.parse(res.obj);
