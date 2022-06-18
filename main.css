@@ -17,3 +17,17 @@ body {
 #main {
     /* border: 1px solid red; */
 }
+
+.buttons {
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    padding: 2px;
+    display: flex;
+}
+
+.buttons > button {
+    flex-grow: 1;
+    height: 48px;
+    margin: 2px;
+}

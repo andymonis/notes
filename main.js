@@ -1,5 +1,8 @@
 /**
  * Snake
+ * Game 1
+ * 
+ * 
  */
 
 import V3Instance from "/vee3/vee_instance.js";
@@ -9,14 +12,19 @@ export default class Main {
     constructor(config) {
         V3Instance.instanceId(config.app.instancedid);
 
+        this.INITIAL_SIZE = 5;
+
+        this.score = 0;
         this.tail = [];
-        this.tail_length = 5;
+        this.tail_length = this.INITIAL_SIZE;
         this.direction = {up:true, down:false, left:false, right: false};
 
-        this.map = {x:0,y:0,w:0,h:0}
+        this.map = {x:0,y:0,w:0,h:0};
+        this.pellet = {x:0,y:0};
     }
 
     game_loop(){ 
+        console.log(`${this.tail.length} ${this.tail_length}`)
         // Add the current x/y
         this.tail.unshift({x:this.x, y:this.y})
         // Remove end of Tail if too long
@@ -24,20 +32,18 @@ export default class Main {
             this.tail.pop();
         }
 
+        // 
         // Replace background
+        //
         this.ctx.clearRect(0, 0, V32D.$props.width, V32D.$props.height);
         this.ctx.fillStyle = "blue";
         this.ctx.fillRect(this.map.x, this.map.y, this.map.w, this.map.h);
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(this.map.x, this.map.y, this.map.w, this.map.h);
 
-        // Draw the snake blobs
-        for(let i=0;i<this.tail.length; i++){
-            let blob_x = (this.tail[i].x * this.tile_size) + this.map.x;
-            let blob_y = (this.tail[i].y * this.tile_size) + this.map.y;
-            this.ctx.fillStyle = "red";
-            this.ctx.fillRect(blob_x, blob_y, this.tile_size, this.tile_size);
-        }
-
-        // add user controls
+        // 
+        // Update Inputs
+        //
         if(this.direction.up){
             this.y--;
         } else if(this.direction.down){
@@ -47,6 +53,24 @@ export default class Main {
         }else if(this.direction.right){
             this.x++;
         }
+
+        // 
+        // Draw the snake blobs
+        //
+        for(let i=0;i<this.tail.length; i++){
+            let blob_x = (this.tail[i].x * this.tile_size) + this.map.x;
+            let blob_y = (this.tail[i].y * this.tile_size) + this.map.y;
+            this.ctx.fillStyle = "red";
+            this.ctx.fillRect(blob_x, blob_y, this.tile_size, this.tile_size);
+        }
+
+        //  
+        // Draw pellet
+        //
+        this.ctx.fillStyle = "green";
+        let pellet_x = (this.pellet.x * this.tile_size) + this.map.x;
+        let pellet_y = (this.pellet.y * this.tile_size) + this.map.y;
+        this.ctx.fillRect(pellet_x, pellet_y, this.tile_size, this.tile_size);
 
         // add wrap
         if(this.x >= this.grid_size){
@@ -59,6 +83,57 @@ export default class Main {
         } else if (this.y < 0){
             this.y = this.grid_size - 1;
         }
+
+        // Check hit of the head
+        if(this.tail[0].x === this.pellet.x && this.tail[0].y === this.pellet.y){
+            console.log("Hit Pellet");
+            this.tail_length++;
+            // Move the pellet to a new location
+            this.move_pellet();
+        }
+    }
+
+    move_pellet(){
+        let x = Math.floor(Math.random() * this.grid_size);
+        let y = Math.floor(Math.random() * this.grid_size);
+        console.log(`pellet ${x} ${y}`);
+        this.pellet.x = x;
+        this.pellet.y = y;
+    }
+
+    clear(){
+        this.direction.down = false;
+        this.direction.up = false;
+        this.direction.left = false;
+        this.direction.right = false;
+    }
+
+    interupt_setup(){
+        // Buttons
+        document.getElementById("btn-left").addEventListener('click', (event) => {
+            if(!this.direction.right){
+                this.clear();
+                this.direction.left = true;
+            }
+        });
+        document.getElementById("btn-up").addEventListener('click', (event) => {
+            if(!this.direction.down){
+                this.clear();
+                this.direction.up = true;
+            }
+        });
+        document.getElementById("btn-down").addEventListener('click', (event) => {
+            if(!this.direction.up){
+                this.clear();
+                this.direction.down = true;
+            }
+        });
+        document.getElementById("btn-right").addEventListener('click', (event) => {
+            if(!this.direction.left){
+                this.clear();
+                this.direction.right = true;
+            }
+        });
     }
 
     game_setup(ctx){
@@ -76,61 +151,17 @@ export default class Main {
         let y = 0;
 
         this.map.x = V32D.$props.half_width - half_width;;
-        this.map.y = 0;
+        this.map.y = 10;
         this.map.w = width; 
         this.map.h = height
+
+        // Set the pellet for snake to eat
+        this.move_pellet();
+
         ctx.fillStyle = "blue";
         ctx.fillRect(this.map.x, this.map.y, this.map.w, this.map.h);
-    }
-
-    clear(){
-        this.direction.down = false;
-        this.direction.up = false;
-        this.direction.left = false;
-        this.direction.right = false;
-    }
-
-    interupt_setup(){
-        // Keyboard
-        document.addEventListener('keyup', (event) => {
-            const keyName = event.key;
-            
-            if(keyName==="ArrowUp"){
-                this.clear();
-                this.direction.up = true;
-            } else if (keyName==="ArrowDown"){
-                this.clear();
-                this.direction.down = true;
-            } else if (keyName==="ArrowLeft"){
-                this.clear();
-                this.direction.left = true;
-            } else if (keyName==="ArrowRight"){
-                this.clear();
-                this.direction.right = true;
-            }
-        }, false);
-
-        // Touch
-        // get a reference to an element
-        var stage = document.getElementById('main');        
-        // create a manager for that element
-        var hammer = new Hammer(stage);
-        hammer.on('tap', (ev) => {
-            this.clear();
-            if(ev.center.y < 50 ){
-                console.log("up");
-                this.direction.up = true;
-            } else if(ev.center.y > 350 ){
-                console.log("down");
-                this.direction.down = true;
-            } if(ev.center.x < 50  ){
-                console.log("left");
-                this.direction.left = true;
-            } if(ev.center.x > 300){
-                console.log("right");
-                this.direction.right = true;
-            }
-        });
+        ctx.lineWidth = 1;
+        ctx.strokeRect(this.map.x, this.map.y, this.map.w, this.map.h);
     }
 
     /**
